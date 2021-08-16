@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+<!--    <property name="LOG_HOME" value="D:/workspace/java/IdeaProjects/gmall/logs" />-->
+    <property name="LOG_HOME" value="/opt/module/rt_gmall/gmall" />
+    <!--    打印到控制台-->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+    <!--    打印到文件-->
+    <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/app.log</file>
+    <!--        滚动策略-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!--    将某一类下日志单独打印日志-->
+    <logger name="com.yf.gmall.com.yf.gmall.loggerController"
+            level="INFO" additivity="false">
+    <!--        使用哪种打印方式-->
+        <appender-ref ref="rollingFile" />
+        <appender-ref ref="console" />
+    </logger>
+    <!--    其他类的错误日志只在控制台输出-->
+    <root level="error" additivity="false">
+        <appender-ref ref="console" />
+    </root>
+</configuration>
