@@ -1,5 +1,6 @@
 package com.yf.gmall.realtime.utils;
 
+import com.yf.gmall.realtime.bean.TransientSink;
 import com.yf.gmall.realtime.common.GmallConfig;
 import org.apache.flink.connector.jdbc.JdbcConnectionOptions;
 import org.apache.flink.connector.jdbc.JdbcExecutionOptions;
@@ -27,15 +28,20 @@ public class ClickhouseUtil {
 
                         // 通过反射获取属性，包含private
                         Field[] fields = obj.getClass().getDeclaredFields();
+                        int skipOffset = 0;
                         for (int i = 0; i < fields.length; i++) {
                             Field field = fields[i];
                             // 开启运行访问私有属性
                             field.setAccessible(true);
                             try {
-                                // 设置占位符参数
-                                System.out.println( i + 1 + "             " + field.get(obj));
-                                ps.setObject(i+1,field.get(obj));
-                                System.out.println("执行成功!");
+                                TransientSink annotation = field.getAnnotation(TransientSink.class);
+                                if(annotation != null) {
+                                    skipOffset ++;
+                                    continue;
+                                } else {
+                                    // 设置占位符参数
+                                    ps.setObject(i+1 - skipOffset,field.get(obj));
+                                }
                             } catch (IllegalAccessException e) {
                                 e.printStackTrace();
                             }

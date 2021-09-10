@@ -36,4 +36,6 @@ public class VisitorStats {
     private Long dur_sum=0L;
     //统计时间
     private Long ts;
+
+
 }
